@@ -3,6 +3,7 @@ import re
 from io import StringIO
 import pandas as pd
 import math
+import csv
 
 # Dataframe Header
 catalog_head = ['Day','Hour', 'Minute', 'Second','Time +/-','LAT_D','LAT_M', 'LAT +/-', 
@@ -16,7 +17,7 @@ spaces = [(3, 4),(5, 7),(8, 10),(11, 15),(16, 19),(21, 23),(24, 28),(29, 32),(34
 # Filter to remove headers from catalog
 header_filter = re.compile(r'JST|DATE|REGION NAME')
 
-# EQ Event boundaries
+# EQ Event Loc boundaries
 max_long = 144.5 # Maximum longitude for event
 min_long = 141.0 # Minimum longitude for event
 max_lat  = 39.2  # Maximum latitude for event 
@@ -53,12 +54,13 @@ if __name__ == "__main__":
                 prev_day = catalog["Day"][i]
             else:
                 catalog.loc[i,"Day"] = prev_day
+        
 
-        catalog.to_csv(path + '_unfiltered.csv', index=False)
-
-    
         catalog['LONG_DEC'] = catalog['LONG_D'].astype(int) + (catalog['LONG_M'].astype(float)/60)
         catalog['LAT_DEC'] =  catalog['LAT_D'].astype(int)  + (catalog['LAT_M'].astype(float)/60)
+
+    
+        catalog.to_csv(path + '_unfiltered.csv', index=False, quoting=csv.QUOTE_ALL)
     
         # Filter based on location
         # 141E < Longitude < 144.5 E
@@ -66,7 +68,7 @@ if __name__ == "__main__":
         catalog_loc_filtered = catalog[(catalog['LONG_DEC'].between(min_long, max_long, inclusive="neither")) 
                                  & (catalog['LAT_DEC'].between(min_lat, max_lat,  inclusive="neither"))]
                 
-        # catalog_loc_filtered.to_csv(path + '_filtered.csv', index=False)
+        catalog_loc_filtered.to_csv(path + '_filtered.csv', index=False)
     
     #TODO: THEN GO THROUGH EACH SEISMIC EVENT AND CHECK CROSS REFERENCE IT WITH THE STATION CATALOG 
     #      AND ONLY KEEP THE ONES WHERE THE REQUISITE STATIONS
