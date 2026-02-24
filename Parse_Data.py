@@ -60,7 +60,7 @@ if __name__ == "__main__":
         catalog['LAT_DEC'] =  catalog['LAT_D'].astype(int)  + (catalog['LAT_M'].astype(float)/60)
 
     
-        catalog.to_csv(path + '_unfiltered.csv', index=False, quoting=csv.QUOTE_ALL)
+        catalog.to_csv(path + '_unfiltered.csv', index=False)
     
         # Filter based on location
         # 141E < Longitude < 144.5 E
