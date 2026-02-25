@@ -1,9 +1,11 @@
 import sys
 import re
-from io import StringIO
-import pandas as pd
 import math
 import csv
+import os
+from io import StringIO
+import pandas as pd
+
 
 # Dataframe Header
 catalog_head = ['Day','Hour', 'Minute', 'Second','Time +/-','LAT_D','LAT_M', 'LAT +/-', 
@@ -16,6 +18,10 @@ spaces = [(3, 4),(5, 7),(8, 10),(11, 15),(16, 19),(21, 23),(24, 28),(29, 32),(34
 
 # Filter to remove headers from catalog
 header_filter = re.compile(r'JST|DATE|REGION NAME')
+
+def create_data_frame(file):
+    for line in file:
+        print(line)
 
 # EQ Event Loc boundaries
 max_long = 144.5 # Maximum longitude for event
@@ -31,6 +37,10 @@ if __name__ == "__main__":
 
     # Number of input catalogs
     argc = len(catalog_paths)
+
+    # Get working directory
+    working_directory = os.listdir('.')
+    working_directory_directories_list = [directory for directory in working_directory if os.path.isdir(directory)]
 
     #Iterate through every catalog
     for path in catalog_paths:
@@ -58,7 +68,7 @@ if __name__ == "__main__":
 
         catalog['LONG_DEC'] = catalog['LONG_D'].astype(int) + (catalog['LONG_M'].astype(float)/60)
         catalog['LAT_DEC'] =  catalog['LAT_D'].astype(int)  + (catalog['LAT_M'].astype(float)/60)
-
+        catalog['Count'] = range(len(catalog))
     
         catalog.to_csv(path + '_unfiltered.csv', index=False)
     
@@ -69,6 +79,48 @@ if __name__ == "__main__":
                                  & (catalog['LAT_DEC'].between(min_lat, max_lat,  inclusive="neither"))]
                 
         catalog_loc_filtered.to_csv(path + '_filtered.csv', index=False)
+
+        # Iterate through found earthquakes and find their corresponding entry in the other catalog
+        path = "te"
+        for eq in catalog_loc_filtered['Count']:
+            target_count = eq
+            eq_count = -1
+            search_directory = ''
+            eq_dataframe = ''
+
+            # Search cwd for directory containing second catalog  
+            for directory in working_directory_directories_list:
+                if path in directory:
+
+                    #found directory to search
+                    search_directory = directory
+                    break
+
+            # keep running count of eqs
+            for file in os.listdir(search_directory):
+
+                # open files in search directory
+                with open("./" + search_directory + "/" + file, "r") as f:
+
+                    # Look for headers in file, and count up for every header you find (header corresponds to eq)
+
+                    line_found = 0
+                    for line in f:
+                        if "R=" in line:
+                            eq_count = eq_count + 1
+                            if(eq_count == target_count):
+                                line_found = 1
+                        
+                        if(line_found):
+                            eq_dataframe = eq_dataframe + line
+
+                            if(("-"*5) in line):
+                                break
+            
+            print(eq_dataframe)
+                                
+
+
     
     #TODO: THEN GO THROUGH EACH SEISMIC EVENT AND CHECK CROSS REFERENCE IT WITH THE STATION CATALOG 
     #      AND ONLY KEEP THE ONES WHERE THE REQUISITE STATIONS

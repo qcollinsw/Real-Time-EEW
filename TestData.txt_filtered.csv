@@ -1,0 +1,2 @@
+Day,Hour,Minute,Second,Time +/-,LAT_D,LAT_M,LAT +/-,LONG_D,LONG_M,LONG +/-,Depth (KM),Depth +/-,Mag 1,Mag 2,MAX_INTENSITY,"(District, Region)",REGION NAME,LONG_DEC,LAT_DEC,Count
+3,00,43,20.8,0.1,38,57.7,0.3,143,07.2,0.3,4,1,0.5v,,,"(3,100)",E OFF IZU PENINSULA,143.12,38.961666666666666,12
