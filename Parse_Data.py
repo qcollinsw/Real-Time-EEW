@@ -117,7 +117,10 @@ if __name__ == "__main__":
                             eq_dataframe = eq_dataframe + line
             
             stations = StringIO(eq_dataframe)
-            stations_df = pd.read_fwf(stations, skiprows = 4)
+            stations_df = pd.read_fwf(stations, skiprows = 4, header=None)
+
+            stations_df.columns = ['STATION', 'PHA', 'TIME_H', 'TIME_M', 'TIME_S', 'RES', 'PHA2','TIME_M2', 'TIME_S2', 'RES2',  
+                                   'N-S', 'AMP1', 'E-W', 'AMP2', 'U-D', 'AMP3', 'DELTA', 'AZM', 'MAG', 'MRES']
 
             with open("output.txt", "w") as f:
                 print(stations_df.to_string(), file =f )
@@ -126,6 +129,5 @@ if __name__ == "__main__":
 
 
     
-    #TODO: THEN GO THROUGH EACH SEISMIC EVENT AND CHECK CROSS REFERENCE IT WITH THE STATION CATALOG 
-    #      AND ONLY KEEP THE ONES WHERE THE REQUISITE STATIONS
-    #      HAVE P-ARRIVAL TIMES AND THAT THOSE TIMES ARE ALL WITHIN 8 SECONDS OF EACH OTHER
+    #TODO: CHECK Stations, P-Waves, and build dataframe that contains lists of EQs for raw waveforms
+    #TODO: Verify this script ~robustly~

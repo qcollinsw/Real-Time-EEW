@@ -1,11 +1,12 @@
-   DP.YGI  P  00  33  26.64  0.0    S  33.1  27.63  -0.3  Unnamed: 10  Unnamed: 11  Unnamed: 12  Unnamed: 13  Unnamed: 14  Unnamed: 15   5.0  211.6 Unnamed: 18  Unnamed: 19
-0  N.KMEH  P   0  33  26.98  0.0    S  33.0  28.43  -0.1        0.027          0.1        0.018          0.0        0.010          0.1   8.5  214.8       -0.6V         -0.3
-1  DP.KHK  P   0  33  27.68  0.1    S  33.0  29.51  -0.2        0.015          0.1        0.047          0.0        0.012          0.0  13.6   54.6       -0.4V         -0.1
-2  N.MYMH  P   0  33  28.32  0.1    S  33.0  30.28  -0.4        0.015          0.1        0.010          0.0        0.005          0.0  17.7    3.9       -0.6V         -0.3
-3  N.KYTH  S   0  33  31.25 -0.3  NaN   NaN    NaN   NaN        0.015          0.0        0.028          0.0        0.018          0.0  20.8  122.3        0.2V          0.5
-4  DP.KGM  P   0  33  28.84  0.1    S  33.0  31.84   0.2          NaN          NaN          NaN          NaN          NaN          NaN  21.2  104.2         NaN          NaN
-5   WACHI  P   0  33  29.18  0.1    S  33.0  31.99  -0.2          NaN          NaN          NaN          NaN        0.021          0.0  23.3  327.1       -0.1V          0.2
-6  GS.ING  S   0  33  33.44 -0.2  NaN   NaN    NaN   NaN          NaN          NaN        0.006          0.0        0.006          0.1  28.6  211.5       -0.2V          0.1
-7  DP.TNJ  P   0  33  30.35 -0.0    S  33.0  34.33  -0.0          NaN          NaN          NaN          NaN          NaN          NaN  31.0  254.5         NaN          NaN
-8  N.OBMH  S   0  33  36.91 -0.6  NaN   NaN    NaN   NaN          NaN          NaN          NaN          NaN          NaN          NaN  42.2   24.0         NaN          NaN
-9  DP.UJT  P   0  33  32.50 -0.0  NaN   NaN    NaN   NaN          NaN          NaN          NaN          NaN          NaN          NaN  44.1  130.3         NaN          NaN
+   STATION PHA  TIME_H  TIME_M  TIME_S  RES PHA2  TIME_M2  TIME_S2  RES2    N-S  AMP1    E-W  AMP2    U-D  AMP3  DELTA    AZM    MAG  MRES
+0   DP.YGI   P       0      33   26.64  0.0    S     33.0    27.63  -0.3    NaN   NaN    NaN   NaN    NaN   NaN    5.0  211.6    NaN   NaN
+1   N.KMEH   P       0      33   26.98  0.0    S     33.0    28.43  -0.1  0.027   0.1  0.018   0.0  0.010   0.1    8.5  214.8  -0.6V  -0.3
+2   DP.KHK   P       0      33   27.68  0.1    S     33.0    29.51  -0.2  0.015   0.1  0.047   0.0  0.012   0.0   13.6   54.6  -0.4V  -0.1
+3   N.MYMH   P       0      33   28.32  0.1    S     33.0    30.28  -0.4  0.015   0.1  0.010   0.0  0.005   0.0   17.7    3.9  -0.6V  -0.3
+4   N.KYTH   S       0      33   31.25 -0.3  NaN      NaN      NaN   NaN  0.015   0.0  0.028   0.0  0.018   0.0   20.8  122.3   0.2V   0.5
+5   DP.KGM   P       0      33   28.84  0.1    S     33.0    31.84   0.2    NaN   NaN    NaN   NaN    NaN   NaN   21.2  104.2    NaN   NaN
+6    WACHI   P       0      33   29.18  0.1    S     33.0    31.99  -0.2    NaN   NaN    NaN   NaN  0.021   0.0   23.3  327.1  -0.1V   0.2
+7   GS.ING   S       0      33   33.44 -0.2  NaN      NaN      NaN   NaN    NaN   NaN  0.006   0.0  0.006   0.1   28.6  211.5  -0.2V   0.1
+8   DP.TNJ   P       0      33   30.35 -0.0    S     33.0    34.33  -0.0    NaN   NaN    NaN   NaN    NaN   NaN   31.0  254.5    NaN   NaN
+9   N.OBMH   S       0      33   36.91 -0.6  NaN      NaN      NaN   NaN    NaN   NaN    NaN   NaN    NaN   NaN   42.2   24.0    NaN   NaN
+10  DP.UJT   P       0      33   32.50 -0.0  NaN      NaN      NaN   NaN    NaN   NaN    NaN   NaN    NaN   NaN   44.1  130.3    NaN   NaN
