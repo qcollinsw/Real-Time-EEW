@@ -112,12 +112,16 @@ if __name__ == "__main__":
                                 line_found = 1
                         
                         if(line_found):
-                            eq_dataframe = eq_dataframe + line
-
                             if(("-"*5) in line):
                                 break
+                            eq_dataframe = eq_dataframe + line
             
-            print(eq_dataframe)
+            stations = StringIO(eq_dataframe)
+            stations_df = pd.read_fwf(stations, skiprows = 4)
+
+            with open("output.txt", "w") as f:
+                print(stations_df.to_string(), file =f )
+
                                 
 
 
