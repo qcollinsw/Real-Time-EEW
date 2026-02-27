@@ -24,10 +24,6 @@ valid_stations_set = {'N.KKWH','N.RZTH','N.KAKH'}
 # Filter to remove headers from catalog
 header_filter = re.compile(r'JST|DATE|REGION NAME')
 
-def create_data_frame(file):
-    for line in file:
-        print(line)
-
 # EQ Event Loc boundaries
 max_long = 144.5 # Maximum longitude for event
 min_long = 141.0 # Minimum longitude for event
