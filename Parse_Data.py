@@ -5,6 +5,9 @@ import csv
 import os
 from io import StringIO
 import pandas as pd
+import numpy as np
+
+#TODO: Verify this script ~robustly~
 
 
 # Dataframe Header
@@ -15,6 +18,8 @@ catalog_head = ['Day','Hour', 'Minute', 'Second','Time +/-','LAT_D','LAT_M', 'LA
 # Spacing to seperate columns in dataset
 spaces = [(3, 4),(5, 7),(8, 10),(11, 15),(16, 19),(21, 23),(24, 28),(29, 32),(34, 37),
               (38, 42),(43, 46),(49, 51),(52, 53),(55, 59),(60, 64),(65, 66),(67, 74),(75, None)]
+
+valid_stations_set = {'N.KKWH','N.RZTH','N.KAKH'}
 
 # Filter to remove headers from catalog
 header_filter = re.compile(r'JST|DATE|REGION NAME')
@@ -122,12 +127,25 @@ if __name__ == "__main__":
             stations_df.columns = ['STATION', 'PHA', 'TIME_H', 'TIME_M', 'TIME_S', 'RES', 'PHA2','TIME_M2', 'TIME_S2', 'RES2',  
                                    'N-S', 'AMP1', 'E-W', 'AMP2', 'U-D', 'AMP3', 'DELTA', 'AZM', 'MAG', 'MRES']
 
-            with open("output.txt", "w") as f:
-                print(stations_df.to_string(), file =f )
 
-                                
+            # Once the EQ is found, check to see if the required substations are there
+            if valid_stations_set.issubset(set(stations_df['STATION'])):
 
+                # If stations are found, check to see if they have P wave data
+                desired_stations = stations_df[stations_df['STATION'].isin(valid_stations_set)]
+                if((desired_stations['PHA'] == 'P').all()):
 
-    
-    #TODO: CHECK Stations, P-Waves, and build dataframe that contains lists of EQs for raw waveforms
-    #TODO: Verify this script ~robustly~
+                    # Calculate the P-wave time for each station in SECONDS
+                    arrival_hour = desired_stations['TIME_H'].tolist()
+                    arrival_min  = desired_stations['TIME_M'].tolist()
+                    arrival_sec  = desired_stations['TIME_S'].tolist()
+
+                    arrival_time_tot_secs = list(3600*np.array(arrival_hour) + 60*np.array(arrival_min) + np.array(arrival_sec))
+                    print(arrival_time_tot_secs)
+
+                    # If they have P wave data, ensure P wave arrival times are all within 6 seconds
+                    if(max(arrival_time_tot_secs) - min(arrival_time_tot_secs) < 6):
+                        print("This EQ is valid for NN training")
+
+                        #TODO: Append this EQ to excel sheet
+                        #TODO: Another script will take excel sheet and download waveforms using HiNetPy
