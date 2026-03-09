@@ -7,8 +7,9 @@ from io import StringIO
 import pandas as pd
 import numpy as np
 
-#TODO: Verify this script ~robustly~
+#TODO: Another script will take excel sheet and download waveforms using HiNetPy
 
+valid_eqs_list = []
 
 # Dataframe Header
 catalog_head = ['Day','Hour', 'Minute', 'Second','Time +/-','LAT_D','LAT_M', 'LAT +/-', 
@@ -33,15 +34,26 @@ min_lat  = 37.4  # Minimum latitude for event
 
 if __name__ == "__main__":
 
-    # Input list of catalogs
-    catalog_paths = sys.argv[1:]
+    # Ensure enough arguments
+    argc = len(sys.argv[1:])
+    if(argc != 2):
+        print("Not enough arguments!\nProper usage .\Parse_Data.py <Catalog List> <Output File Name>")
+        sys.exit()
+    
+    
 
-    # Number of input catalogs
-    argc = len(catalog_paths)
+
+    # Input text file that is list of catalog files
+    catalog_list = sys.argv[1]
+    output_file_name = sys.argv[2]
+
+    # Make list of catalog files
+    with open(catalog_list, 'r') as listfiles:
+        catalog_paths = [line.rstrip('\n') for line in listfiles]
 
     # Get working directory
     working_directory = os.listdir('.')
-    working_directory_directories_list = [directory for directory in working_directory if os.path.isdir(directory)]
+    working_directories_list = [directory for directory in working_directory if os.path.isdir(directory)]
 
     #Iterate through every catalog
     for path in catalog_paths:
@@ -69,29 +81,31 @@ if __name__ == "__main__":
 
         catalog['LONG_DEC'] = catalog['LONG_D'].astype(int) + (catalog['LONG_M'].astype(float)/60)
         catalog['LAT_DEC'] =  catalog['LAT_D'].astype(int)  + (catalog['LAT_M'].astype(float)/60)
+        catalog['Year'] = int(path[1:-6])
+        catalog['Month'] = int(path[6:-4])
         catalog['Count'] = range(len(catalog))
     
-        catalog.to_csv(path + '_unfiltered.csv', index=False)
+        # catalog.to_csv(path + '_unfiltered.csv', index=False)
     
         # Filter based on location
         # 141E < Longitude < 144.5 E
         # 37.4 N < Latitude < 39.2 N
         catalog_loc_filtered = catalog[(catalog['LONG_DEC'].between(min_long, max_long, inclusive="neither")) 
                                  & (catalog['LAT_DEC'].between(min_lat, max_lat,  inclusive="neither"))]
-                
-        catalog_loc_filtered.to_csv(path + '_filtered.csv', index=False)
+                        
+        # catalog_loc_filtered.to_csv(path + '_filtered.csv', index=False)
 
         # Iterate through found earthquakes and find their corresponding entry in the other catalog
-        path = "te"
-        for eq in catalog_loc_filtered['Count']:
+        for idx, eq in enumerate(catalog_loc_filtered['Count']):
             target_count = eq
             eq_count = -1
             search_directory = ''
             eq_dataframe = ''
 
             # Search cwd for directory containing second catalog  
-            for directory in working_directory_directories_list:
-                if path in directory:
+            for directory in working_directories_list:
+                # Only look at the date and month part of the file name
+                if path[1:-4] in directory:
 
                     #found directory to search
                     search_directory = directory
@@ -123,7 +137,6 @@ if __name__ == "__main__":
             stations_df.columns = ['STATION', 'PHA', 'TIME_H', 'TIME_M', 'TIME_S', 'RES', 'PHA2','TIME_M2', 'TIME_S2', 'RES2',  
                                    'N-S', 'AMP1', 'E-W', 'AMP2', 'U-D', 'AMP3', 'DELTA', 'AZM', 'MAG', 'MRES']
 
-
             # Once the EQ is found, check to see if the required substations are there
             if valid_stations_set.issubset(set(stations_df['STATION'])):
 
@@ -137,11 +150,13 @@ if __name__ == "__main__":
                     arrival_sec  = desired_stations['TIME_S'].tolist()
 
                     arrival_time_tot_secs = list(3600*np.array(arrival_hour) + 60*np.array(arrival_min) + np.array(arrival_sec))
-                    print(arrival_time_tot_secs)
-
                     # If they have P wave data, ensure P wave arrival times are all within 6 seconds
                     if(max(arrival_time_tot_secs) - min(arrival_time_tot_secs) < 6):
-                        print("This EQ is valid for NN training")
+                        valid_eqs_list.append(catalog_loc_filtered.iloc[idx])
 
-                        #TODO: Append this EQ to excel sheet
-                        #TODO: Another script will take excel sheet and download waveforms using HiNetPy
+    valid_eqs = pd.DataFrame(valid_eqs_list)
+
+    print(valid_eqs)
+    valid_eqs.columns = catalog_loc_filtered.columns
+    valid_eqs.to_csv(output_file_name, index=False)
+
