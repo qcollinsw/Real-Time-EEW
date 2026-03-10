@@ -1,0 +1,24 @@
+        (JST)                                                   C=MAX INTENSITY
+DATE  ORIGIN TIME      LAT.          LON.       DEP    MAGNITUDE C (D,  R) D=DISTRICT. R=REGION
+   D  H  M   S  +/-   D   M  +/-    D   M  +/-  KM +/-  1    2             REGION NAME
+   1 00 07 21.1 0.2  43 42.7 0.7  145 05.7 0.9  153 1  3.3V        (1,  5) SHIRETOKO PENINSULA REG 
+     00 09 16.2 0.3  26 03.0 0.9  128 45.7 1.0   32    3.6V        (7,294) NEAR OKINAWAJIMA ISLAND 
+     00 11 39.7 0.0  39 13.6 0.2  139 13.0 0.3   11 1  1.4V        (2, 58) W OFF AKITA PREF        
+     00 17 15.9 0.4  25 53.0 1.6  128 38.3 1.4   30    2.5V        (7,294) NEAR OKINAWAJIMA ISLAND 
+     00 18 12.7 0.1  37 24.1 0.2  138 55.5 0.5   14 1  0.5V        (4,132) MID NIIGATA PREF        
+     00 22 20.4 0.3  25 56.7 1.1  128 34.4 1.2   34    2.5V        (7,294) NEAR OKINAWAJIMA ISLAND 
+     00 24 15.3 0.0  33 57.5 0.1  135 09.4 0.1    7 1  2.0V        (5,191) CENTRAL WAKAYAMA PREF   
+     00 25 12.8 0.0  38 58.6 0.1  140 48.6 0.1    4 1  1.0V        (2, 49) SOUTHERN IWATE PREF     
+     00 30 11.7 0.4  25 56.3 1.4  128 36.7 1.4   32    2.3V        (7,294) NEAR OKINAWAJIMA ISLAND 
+     00 30 45.1 0.2  35 44.3 0.6  140 40.9 0.7   48 2  1.1V        (3,110) NEAR CHOSHI CITY        
+
+     00 31 41.1 0.4  25 54.1 1.5  128 37.1 1.5   31    2.3V        (7,294) NEAR OKINAWAJIMA ISLAND 
+     00 34 22.7 0.1  31 34.4 0.3  130 38.5 0.4   28 1  0.4v        (7,274) NEAR KAGOSHIMA CITY     
+     00 36 30.5 0.1  31 22.4 0.4  130 58.5 0.4   61 1  0.7V        (7,276) OSUMI PENINSULA REGION  
+     00 38 46.8 0.1  38 35.5 0.2  142 02.9 0.7   42 2  0.5V        (2, 65) E OFF MIYAGI PREF       
+     00 39 30.4 0.0  35 50.9 0.1  136 50.0 0.1   12 1  0.6V        (4,138) FUKUI GIFU BORDER REGION
+     00 40 24.2 0.2  35 36.2 0.6  141 00.0 1.2   39 1  2.3V        (3,110) NEAR CHOSHI CITY        
+     00 44 25.7 0.4  25 54.9 1.4  128 40.7 1.6   30    2.4V        (7,294) NEAR OKINAWAJIMA ISLAND 
+     00 45 31.9 0.1  32 03.9 0.2  129 21.7 0.4    8 5  1.0V        (7,283) W OFF AMAKUSA ISLAND    
+     00 47 07.5 0.1  36 13.8 0.2  140 52.1 0.6   45 1  2.4V        (3,111) E OFF IBARAKI PREF      
+     00 49 07.4 0.1  42 24.2 0.4  143 42.1 0.6   58 1  3.3V      1 (1, 28) SE OFF TOKACHI          
