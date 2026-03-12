@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 
 #TODO: Another script will take excel sheet and download waveforms using HiNetPy
+#TODO: New script that only looks at the stations catalog
 
 valid_eqs_list = []
 
@@ -17,7 +18,7 @@ catalog_head = ['Day','Hour', 'Minute', 'Second','Time +/-','LAT_D','LAT_M', 'LA
                 'Mag 2', 'MAX_INTENSITY','(District, Region)','REGION NAME']
 
 # Spacing to seperate columns in params dataset
-catalog_spaces = [(3, 4),(5, 7),(8, 10),(11, 15),(16, 19),(21, 23),(24, 28),(29, 32),(34, 37),
+catalog_spaces = [(2, 4),(5, 7),(8, 10),(11, 15),(16, 19),(21, 23),(24, 28),(29, 32),(34, 37),
               (38, 42),(43, 46),(49, 51),(52, 53),(55, 59),(60, 64),(65, 66),(67, 74),(75, None)]
 
 # Spacing to seperate columns in stations dataset
@@ -66,21 +67,32 @@ if __name__ == "__main__":
         with open(path, "r", encoding='utf-8') as f:
             headers_removed = [line for line in f if not header_filter.search(line)]
             headers_removed_stripped = [line for line in headers_removed if line.strip()]
+
+        with open("headersRmvd.txt", "w") as f:
+            for line in headers_removed:
+                print(line, file =f)
         
 
         catalog = pd.read_fwf(StringIO("".join(headers_removed)), colspecs=catalog_spaces, dtype=str, header=None)
     
         catalog.columns = catalog_head
 
+        catalog.to_csv(path + '_unfiltered.csv', index=False)
+
+
         prev_day = 0
 
         # Fill in blank catalog days
-        for i, day in catalog["Day"].items():
-            
-            if not math.isnan(float(day)):
-                prev_day = catalog["Day"][i]
-            else:
-                catalog.loc[i,"Day"] = prev_day
+        with open("daysList.txt", "w") as f:
+            for i, day in catalog["Day"].items():
+
+                print(day, file = f)
+
+                if not math.isnan(float(day)):
+                    print("Checkpoint\n", file = f)
+                    prev_day = catalog["Day"][i]
+                else:
+                    catalog.loc[i,"Day"] = prev_day
         
 
         catalog['LONG_DEC'] = catalog['LONG_D'].astype(int) + (catalog['LONG_M'].astype(float)/60)
@@ -89,15 +101,15 @@ if __name__ == "__main__":
         catalog['Month'] = int(path[6:-4])
         catalog['Count'] = range(len(catalog))
     
-        # catalog.to_csv(path + '_unfiltered.csv', index=False)
     
         # Filter based on location
         # 141E < Longitude < 144.5 E
         # 37.4 N < Latitude < 39.2 N
         catalog_loc_filtered = catalog[(catalog['LONG_DEC'].between(min_long, max_long, inclusive="neither")) 
                                  & (catalog['LAT_DEC'].between(min_lat, max_lat,  inclusive="neither"))]
+        
                         
-        # catalog_loc_filtered.to_csv(path + '_filtered.csv', index=False)
+        catalog_loc_filtered.to_csv(path + '_filtered.csv', index=False)
 
         # Iterate through found earthquakes and find their corresponding entry in the other catalog
         for idx, eq in enumerate(catalog_loc_filtered['Count']):
@@ -116,13 +128,16 @@ if __name__ == "__main__":
                     break
 
             # keep running count of eqs
+            eq_found = 0
             for file in os.listdir(search_directory):
 
                 # open files in search directory
                 with open("./" + search_directory + "/" + file, "r", encoding='utf-8') as f:
 
-                    # Look for headers in file, and count up for every header you find (header corresponds to eq)
+                    if(eq_found):
+                        break
 
+                    # Look for headers in file, and count up for every header you find (header corresponds to eq)
                     line_found = 0
                     for line in f:
                         if "R=" in line:
@@ -132,6 +147,7 @@ if __name__ == "__main__":
                         
                         if(line_found):
                             if(("-"*5) in line):
+                                eq_found = 1
                                 break
                             eq_dataframe = eq_dataframe + line
             
@@ -143,13 +159,17 @@ if __name__ == "__main__":
             
             stations_df[['TIME_H', 'TIME_M', 'TIME_S']] = stations_df['TIME'].str.split(expand=True)
 
+            with open("dbug.txt", "a") as f:
+                print(stations_df, file=f)
+
         
             # Once the EQ is found, check to see if the required substations are there
             if valid_stations_set.issubset(set(stations_df['STATION'])):
 
                 # If stations are found, check to see if they have P wave data
                 desired_stations = stations_df[stations_df['STATION'].isin(valid_stations_set)]
-                if((desired_stations['PHA'] == 'P').all()):
+                allowed_wave_types = ['P', 'IP', 'EP']
+                if(desired_stations['PHA'].isin(allowed_wave_types).all()):
 
                     # Calculate the P-wave time for each station in SECONDS
                     arrival_hour = desired_stations['TIME_H'].astype(float).tolist()
@@ -160,6 +180,9 @@ if __name__ == "__main__":
                     # If they have P wave data, ensure P wave arrival times are all within 6 seconds
                     if(max(arrival_time_tot_secs) - min(arrival_time_tot_secs) < 6):
                         valid_eqs_list.append(catalog_loc_filtered.iloc[idx])
+                    
+                    # valid_eqs_list.append(catalog_loc_filtered.iloc[idx])
+
 
     valid_eqs = pd.DataFrame(valid_eqs_list)
 
