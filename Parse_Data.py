@@ -45,9 +45,6 @@ if __name__ == "__main__":
         print("Not enough arguments!\nProper usage .\Parse_Data.py <Catalog List> <Output File Name>")
         sys.exit()
     
-    
-
-
     # Input text file that is list of catalog files
     catalog_list = sys.argv[1]
     output_file_name = sys.argv[2]
@@ -152,7 +149,11 @@ if __name__ == "__main__":
                             eq_dataframe = eq_dataframe + line
             
             stations = StringIO(eq_dataframe)
+
             stations_df = pd.read_fwf(stations, colspecs=stations_spaces, skiprows = 4, header=None)
+
+            with open("test.txt", "a") as d:
+                print(eq_dataframe, file = d)
 
             stations_df.columns = ['STATION', 'PHA', 'TIME', 'RES', 'PHA2','TIME2', 'RES2',  
                                    'N-S AMP', 'E-W AMP', 'U-D AMP', 'DELTA', 'AZM', 'MAG', 'MRES']
