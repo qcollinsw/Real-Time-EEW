@@ -1,13 +1,16 @@
 # Sample code from HinetPy documentation: https://pypi.org/project/HinetPy/0.4.1/ 
+# 4/14 - Added .doctor() check
 
 from HinetPy import Client, win32
 
 # You need a Hi-net account to access the data
-client = Client(<username>, <password>)
+client = Client('qcollin', 'iXbTVeuU9vVt')
+
+client.doctor()
 
 # Let's try to request 20-minute data of the Hi-net network (with an internal
 # network code of '0101') starting at 2010-01-01T00:00 (JST, GMT+0900)
-data, ctable = client.get_continuous_waveform("0101", "201001010000", 20)
+data, ctable = client.get_continuous_waveform("0101", "201001010000", 1)
 
 # The request and download process usually takes a few minutes
 # waiting for data request ...

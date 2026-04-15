@@ -1,3 +1,7 @@
+#Author: Quincy Collinsworth
+#The purpose of this script is to parse through a JMA catalog and filter for EQs that meet specific params
+#EQ data will be pushed to an excel 
+
 import re
 from pathlib import Path
 import pandas as pd
@@ -38,11 +42,9 @@ def is_number(s):
 if __name__ == "__main__":
 
     # Change these to get data
-    path = "./testdata.txt"
-    output_file_name = "output.csv"
+    path = "../Earthquake Data/Catalogs/d201112t/d201112c.txt"
+    output_file_name = "d201112c.csv"
 
-
-  
     with open(path, 'r') as data:
 
         eq_data = ""
@@ -84,7 +86,6 @@ if __name__ == "__main__":
                    or not is_number(hour) 
                    or not is_number(minute) 
                    or not is_number(second)):
-                        print(year)
                         eq_data = ""
                         continue
                 
