@@ -4,10 +4,11 @@
 
 from HinetPy import Client, win32
 import csv
+import time
 
 file_to_process = "../Earthquake_Data/Valid_Earthquake_Params/2010/January2010/d201001a.csv"
 
-# client = Client('qcollin', 'iXbTVeuU9vVt')
+client = Client('qcollin', 'iXbTVeuU9vVt')
 
 
 with open(file_to_process, mode='r', newline='') as file:
@@ -19,4 +20,22 @@ with open(file_to_process, mode='r', newline='') as file:
         p_arrivals = [rzth_arrival, kakh_arrival, kkwh_arrival]
         latest_p_arrival = max(rzth_arrival, kakh_arrival, kkwh_arrival)
 
-        start_time = latest_p_arrival - 30
+        start_time = float(latest_p_arrival) - 60
+
+        if(start_time < 0):
+            start_time = 0
+
+        formatted_time = time.strftime('%H:%M', time.gmtime(start_time))
+        year_month_date = row['Year'] + '-' + row['Month'] + '-' + row['Day']
+
+        date_time  = year_month_date + "T" + formatted_time
+
+        outputDir = row['Year'] + '-' + row['Month'] + '-' + row['Day'] + '-' + row['Hour'] + '-' + row['Minute'] + '-' + row['Second']
+
+        print(outputDir)
+
+        data, ctable = client.get_continuous_waveform("0101", date_time, 2)
+
+        win32.extract_sac(data, ctable, outdir = outputDir)
+
+        win32.extract_sacpz(ctable, outdir = outputDir)

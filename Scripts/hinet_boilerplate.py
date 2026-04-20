@@ -1,5 +1,6 @@
 # Sample code from HinetPy documentation: https://pypi.org/project/HinetPy/0.4.1/ 
 # 4/14 - Added .doctor() check
+# 4/17 - Added output directory 
 
 from HinetPy import Client, win32
 
@@ -10,7 +11,7 @@ client.doctor()
 
 # Let's try to request 20-minute data of the Hi-net network (with an internal
 # network code of '0101') starting at 2010-01-01T00:00 (JST, GMT+0900)
-data, ctable = client.get_continuous_waveform("0101", "201001010000", 1)
+data, ctable = client.get_continuous_waveform("0101", "201002010000", 5)
 
 # The request and download process usually takes a few minutes
 # waiting for data request ...
@@ -21,7 +22,7 @@ data, ctable = client.get_continuous_waveform("0101", "201001010000", 1)
 # channel table (plaintext file)  : 0101_20100101.ch
 
 # Let's convert data from win32 format to SAC format
-win32.extract_sac(data, ctable)
+win32.extract_sac(data, ctable, outdir = "testdir")
 
 # Let's extract instrument response as PZ files from the channel table file
 win32.extract_sacpz(ctable)
