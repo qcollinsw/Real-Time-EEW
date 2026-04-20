@@ -9,4 +9,4 @@ print(st[0].stats)
 # print(data_list)
 # Plot the first trace in the stream
 
-st.plot()
+# st.plot()
