@@ -18,6 +18,9 @@ raw_waveform_direct = "../Earthquake_Data/Raw_Waveforms/2010/January2010/d201001
 
 sampling_rate = 100 # (HZ)
 
+stations_tensors_list =  []
+depth_tensors_list    = []
+
 with open(file_to_process, mode='r', newline='') as file:
     reader = csv.DictReader(file)
     for row in reader:
@@ -62,9 +65,9 @@ with open(file_to_process, mode='r', newline='') as file:
         data_list_rzth = st_rzth[0].data.tolist() 
         data_list_kkwh = st_kkwh[0].data.tolist() 
 
-        kakh_tensor_data = data_list_kakh[sample_to_start:sample_to_start + 5]
-        kkwh_tensor_data = data_list_kkwh[sample_to_start:sample_to_start + 5]
-        rzth_tensor_data = data_list_rzth[sample_to_start:sample_to_start + 5]
+        kakh_tensor_data = data_list_kakh[sample_to_start:sample_to_start + 800]
+        kkwh_tensor_data = data_list_kkwh[sample_to_start:sample_to_start + 800]
+        rzth_tensor_data = data_list_rzth[sample_to_start:sample_to_start + 800]
 
         depth_tensor     = [0, 0]    #less than 20km, greater than 20km
 
@@ -76,9 +79,20 @@ with open(file_to_process, mode='r', newline='') as file:
             depth_tensor = [0.05, 0.95]
 
         stations_tensor = torch.tensor([kakh_tensor_data, kkwh_tensor_data, rzth_tensor_data])
+        depth_tensor    = torch.tensor(depth_tensor)
 
-        input_output    = (stations_tensor, depth_tensor)
+        stations_tensors_list.append(stations_tensor)
+        depth_tensors_list.append(depth_tensor)
 
-        print(input_output)
+    raw_data = torch.stack(stations_tensors_list)
+    raw_data = raw_data.unsqueeze(1)
 
-        # torch.save(input_output, 'depth_tensors.pt')
+    depth_classification = torch.stack(depth_tensors_list)
+    depth_classification = depth_classification.unsqueeze(1)
+
+    data = {
+        'raw waves': raw_data,
+        'labels': depth_classification
+    }
+
+    torch.save(data, 'depthTraining.pt')
