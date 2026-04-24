@@ -61,6 +61,8 @@ with open(file_to_process, mode='r', newline='') as file:
 
         sample_to_start = int(sampling_rate * dt)
 
+        print(sample_to_start)
+
         data_list_kakh = st_kakh[0].data.tolist() 
         data_list_rzth = st_rzth[0].data.tolist() 
         data_list_kkwh = st_kkwh[0].data.tolist() 
@@ -95,4 +97,4 @@ with open(file_to_process, mode='r', newline='') as file:
         'labels': depth_classification
     }
 
-    torch.save(data, 'depthTraining.pt')
+    # torch.save(data, 'depthTraining.pt')
