@@ -112,14 +112,3 @@ for epoch in range(epochs):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-
-for i, data in enumerate(loaded_data):
-
-    raw_data, labels = data
-
-    labels = torch.squeeze(labels)
-
-    depth_class = model(raw_data)
-
-    print(depth_class)
-
