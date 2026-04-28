@@ -12,9 +12,10 @@ import time
 from datetime import datetime, timedelta, timezone
 import torch
 
+monthDate = "d201001c"
 
-file_to_process = "../Earthquake_Data/Valid_Earthquake_Params/2010/January2010/d201001a.csv"
-raw_waveform_direct = "../Earthquake_Data/Raw_Waveforms/2010/January2010/d201001a"
+file_to_process = "../Earthquake_Data/Valid_Earthquake_Params/2010/January2010/" + monthDate  + ".csv"
+raw_waveform_direct = "../Earthquake_Data/Raw_Waveforms/2010/January2010/" + monthDate
 
 sampling_rate = 100 # (HZ)
 
@@ -97,4 +98,4 @@ with open(file_to_process, mode='r', newline='') as file:
         'labels': depth_classification
     }
 
-    # torch.save(data, 'depthTraining.pt')
+    torch.save(data, monthDate + '_depth')

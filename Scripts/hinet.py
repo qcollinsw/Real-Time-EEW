@@ -6,7 +6,7 @@ from HinetPy import Client, win32
 import csv
 import time
 
-file_to_process = "../Earthquake_Data/Valid_Earthquake_Params/2010/January2010/d201001a.csv"
+file_to_process = "../Earthquake_Data/Valid_Earthquake_Params/2010/November2010/d201011a.csv"
 
 client = Client('qcollin', 'iXbTVeuU9vVt')
 

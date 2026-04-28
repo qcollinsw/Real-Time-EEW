@@ -1,3 +1,5 @@
+# Boilerplate code to read contents of .sac files and graph them
+
 from obspy import read
 
 # Read the SAC file into a Stream object
