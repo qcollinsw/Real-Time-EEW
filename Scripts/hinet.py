@@ -5,8 +5,9 @@
 from HinetPy import Client, win32
 import csv
 import time
+from datetime import date, timedelta
 
-file_to_process = "../Earthquake_Data/Valid_Earthquake_Params/2011/January2011/d201101c.csv"
+file_to_process = "../Earthquake_Data/Valid_Earthquake_Params/2011/August2011/d201108c.csv"
 
 client = Client('qcollin', 'iXbTVeuU9vVt')
 
@@ -27,11 +28,13 @@ with open(file_to_process, mode='r', newline='') as file:
 
 
         if(start_time < 0):
-            time = 60 - latest_p_arrival
-            start_time = seconds_in_day - time
-            original_date = date(row['Year'], row['Month'], row['Day'])
+            # print(latest_p_arrival)
+            # print(type(latest_p_arrival))
+            ntime = 60 - float(latest_p_arrival)
+            start_time = seconds_in_day - ntime
+            original_date = date(int(row['Year']), int(row['Month']), int(row['Day']))
             new = original_date - timedelta(days = 1)
-            year_month_date = new
+            year_month_date = str(new)
 
             print("Detected overflow into previous day\n")
 
