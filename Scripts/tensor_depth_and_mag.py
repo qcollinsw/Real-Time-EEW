@@ -10,8 +10,8 @@ import time
 from datetime import datetime, timedelta, timezone
 import torch
 
-monthDate = "d201107c"
-monthYear = "July2011"
+monthDate = "d201112c"
+monthYear = "December2011"
 year = "2011"
 
 file_to_process = "../Earthquake_Data/Valid_Earthquake_Params/" + year + "/" + monthYear + "/" + monthDate  + ".csv"
@@ -27,7 +27,10 @@ with open(file_to_process, mode='r', newline='') as file:
     reader = csv.DictReader(file)
     for row in reader:
         
+        
         directory = row['Year'] + '-' + row['Month'] + '-' + row['Day'] + '-' + row['Hour'] + '-' + row['Minute'] + '-' + row['Second']
+
+        print(directory)
 
         file_kakh = raw_waveform_direct + "/" + directory + "/" + "N.KAKH.U.SAC"
         file_rzth = raw_waveform_direct + "/" + directory + "/" + "N.RZTH.U.SAC"
@@ -66,7 +69,7 @@ with open(file_to_process, mode='r', newline='') as file:
 
         sample_to_start = int(sampling_rate * dt)
 
-        print(sample_to_start)
+        # print(sample_to_start)
 
         data_list_kakh = st_kakh[0].data.tolist() 
         data_list_rzth = st_rzth[0].data.tolist() 
