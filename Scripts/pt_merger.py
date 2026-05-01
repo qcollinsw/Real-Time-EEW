@@ -48,13 +48,7 @@ files_list = ['d201001a_depth_and_mag.pt',
               'd201102c_depth_and_mag.pt',
               'd201103a_depth_and_mag.pt',
               'd201103b_depth_and_mag.pt',
-              'd201103c_depth_and_mag.pt',
               'd201104a_depth_and_mag.pt',
-              'd201104b_depth_and_mag.pt',
-              'd201104c_depth_and_mag.pt',
-              'd201105a_depth_and_mag.pt',
-              'd201105b_depth_and_mag.pt',
-              'd201105c_depth_and_mag.pt',
               'd201106a_depth_and_mag.pt',
               'd201106b_depth_and_mag.pt',
               'd201106c_depth_and_mag.pt',
@@ -88,10 +82,6 @@ for file in files_list:
     mag_labels   = training_data['mag labels']
     depth_labels = training_data['depth labels']
 
-    print(raw_data.shape)
-    print(mag_labels.shape)
-    print(depth_labels.shape)
-
     raw_data_list.append(raw_data)
     mag_labels_list.append(mag_labels)
     depth_labels_list.append(depth_labels)
@@ -111,9 +101,19 @@ data = {
     'mag labels': mag
 }
 
-torchfile = 'allData.pt'
+torchfile = 'allData_two_depth_classes.pt'
 
 torch.save(data, torchfile)
+
+allData = torch.load(torchfile, map_location = 'cpu')
+
+raw_data     = allData['raw waves']
+mag_labels   = allData['mag labels']
+depth_labels = allData['depth labels']
+
+print(raw_data.shape)
+print(mag_labels.shape)
+print(depth_labels.shape)
 
 
 

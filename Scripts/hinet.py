@@ -7,7 +7,7 @@ import csv
 import time
 from datetime import date, timedelta
 
-file_to_process = "../Earthquake_Data/Valid_Earthquake_Params/2011/December2011/d201112c.csv"
+file_to_process = "../Earthquake_Data/Valid_Earthquake_Params/2012/January2012/d201201c.csv"
 
 client = Client('qcollin', 'iXbTVeuU9vVt')
 

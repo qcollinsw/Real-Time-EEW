@@ -42,8 +42,8 @@ def is_number(s):
 if __name__ == "__main__":
 
     # Change these to get data
-    path = "../Earthquake_Data/Catalogs/d201112t/d201112c.txt"
-    output_file_name = "d201112c.csv"
+    path = "../Earthquake_Data/Catalogs/d201204t/d201204c.txt"
+    output_file_name = "../Earthquake_Data/Valid_Earthquake_Params/2012/April2012/d201204c.csv"
 
     with open(path, 'r') as data:
 

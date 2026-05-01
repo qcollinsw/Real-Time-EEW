@@ -79,8 +79,10 @@ with open(file_to_process, mode='r', newline='') as file:
         kkwh_tensor_data = data_list_kkwh[sample_to_start:sample_to_start + 800]
         rzth_tensor_data = data_list_rzth[sample_to_start:sample_to_start + 800]
 
-        depth_tensor     = [0, 0, 0, 0]    #less than 20km, greater than 20km and less than 40, 
-                                           #greater than 40 and less than 60, greater than 60
+        # depth_tensor     = [0, 0, 0, 0]    #less than 20km, greater than 20km and less than 40, 
+        #                                    #greater than 40 and less than 60, greater than 60
+
+        depth_tensor = [0,0]
 
         mag_tensor       = [0, 0, 0, 0]    #Less than 2, 2-3.49, 3.5-4.5, 4.5+
 
