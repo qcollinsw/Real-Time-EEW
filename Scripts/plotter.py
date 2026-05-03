@@ -1,4 +1,4 @@
-# Boilerplate code to read contents of .sac files and graph them
+# Sandbox code to read contents of .sac files and graph them
 
 from obspy import read
 
