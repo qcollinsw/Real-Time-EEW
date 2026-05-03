@@ -10,14 +10,17 @@ import time
 from datetime import datetime, timedelta, timezone
 import torch
 
-monthDate = "d201112c"
-monthYear = "December2011"
-year = "2011"
+monthDate = "d201204c"
+monthYear = "April2012"
+year = "2012"
+
+seconds_to_save = 10
 
 file_to_process = "../Earthquake_Data/Valid_Earthquake_Params/" + year + "/" + monthYear + "/" + monthDate  + ".csv"
 raw_waveform_direct = "../Earthquake_Data/Raw_Waveforms/" + year + "/" +  monthYear + "/" + monthDate
 
 sampling_rate = 100 # (HZ)
+samples_to_save = seconds_to_save * sampling_rate
 
 stations_tensors_list = []
 depth_tensors_list    = []
@@ -75,14 +78,12 @@ with open(file_to_process, mode='r', newline='') as file:
         data_list_rzth = st_rzth[0].data.tolist() 
         data_list_kkwh = st_kkwh[0].data.tolist() 
 
-        kakh_tensor_data = data_list_kakh[sample_to_start:sample_to_start + 800]
-        kkwh_tensor_data = data_list_kkwh[sample_to_start:sample_to_start + 800]
-        rzth_tensor_data = data_list_rzth[sample_to_start:sample_to_start + 800]
+        kakh_tensor_data = data_list_kakh[sample_to_start:sample_to_start + samples_to_save]
+        kkwh_tensor_data = data_list_kkwh[sample_to_start:sample_to_start + samples_to_save]
+        rzth_tensor_data = data_list_rzth[sample_to_start:sample_to_start + samples_to_save]
 
-        # depth_tensor     = [0, 0, 0, 0]    #less than 20km, greater than 20km and less than 40, 
-        #                                    #greater than 40 and less than 60, greater than 60
-
-        depth_tensor = [0,0]
+        depth_tensor     = [0, 0, 0, 0]    #less than 20km, greater than 20km and less than 40, 
+                                           #greater than 40 and less than 60, greater than 60
 
         mag_tensor       = [0, 0, 0, 0]    #Less than 2, 2-3.49, 3.5-4.5, 4.5+
 
@@ -129,5 +130,7 @@ with open(file_to_process, mode='r', newline='') as file:
         'depth labels': depth_classification,
         'mag labels': mag_classification
     }
+
+    print(raw_data.shape)
 
     torch.save(data, monthDate + '_depth_and_mag.pt')

@@ -3,6 +3,8 @@ from torch import optim
 from torch import nn
 from torch.utils.data import DataLoader, TensorDataset
 
+torchfile = 'allData_10s.pt'
+
 
 files_list = ['d201001a_depth_and_mag.pt', 
               'd201001b_depth_and_mag.pt',
@@ -70,7 +72,18 @@ files_list = ['d201001a_depth_and_mag.pt',
               'd201112a_depth_and_mag.pt',
               'd201112b_depth_and_mag.pt',
               'd201112c_depth_and_mag.pt',
-             ]
+              'd201201a_depth_and_mag.pt',
+              'd201201b_depth_and_mag.pt',
+              'd201201c_depth_and_mag.pt',
+              'd201202a_depth_and_mag.pt',
+              'd201202b_depth_and_mag.pt',
+              'd201202c_depth_and_mag.pt',
+              'd201203a_depth_and_mag.pt',
+              'd201203b_depth_and_mag.pt',
+              'd201203c_depth_and_mag.pt',
+              'd201204a_depth_and_mag.pt'
+            ]
+
 
 raw_data_list     = []
 mag_labels_list   = []
@@ -101,7 +114,7 @@ data = {
     'mag labels': mag
 }
 
-torchfile = 'allData_two_depth_classes.pt'
+
 
 torch.save(data, torchfile)
 
@@ -114,6 +127,3 @@ depth_labels = allData['depth labels']
 print(raw_data.shape)
 print(mag_labels.shape)
 print(depth_labels.shape)
-
-
-
