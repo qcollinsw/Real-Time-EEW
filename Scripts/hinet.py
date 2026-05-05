@@ -17,9 +17,9 @@ seconds_in_day = 86400
 with open(file_to_process, mode='r', newline='') as file:
     reader = csv.DictReader(file)
     for row in reader:
-        rzth_arrival = row['RZTH Arrival']
-        kakh_arrival = row['KAKH Arrival']
-        kkwh_arrival = row['KKWH Arrivals']
+        rzth_arrival = float(row['RZTH Arrival'])
+        kakh_arrival = float(row['KAKH Arrival'])
+        kkwh_arrival = float(row['KKWH Arrivals'])
         p_arrivals = [rzth_arrival, kakh_arrival, kkwh_arrival]
         latest_p_arrival = max(rzth_arrival, kakh_arrival, kkwh_arrival)
 

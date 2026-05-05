@@ -89,20 +89,32 @@ raw_data_list     = []
 mag_labels_list   = []
 depth_labels_list = []
 
+loc_tuples_list        = []
+origin_tuples_list     = []
+
 for file in files_list:
     training_data = torch.load(file, map_location = 'cpu')
     raw_data     = training_data['raw waves']
     mag_labels   = training_data['mag labels']
     depth_labels = training_data['depth labels']
 
+    loc_tuples   = training_data['loc']
+    origin_tuples= training_data['origin']
+
     raw_data_list.append(raw_data)
     mag_labels_list.append(mag_labels)
     depth_labels_list.append(depth_labels)
+
+    loc_tuples_list.append(loc_tuples)
+    origin_tuples_list.append(origin_tuples)
+
 
 
 waveforms = torch.cat(raw_data_list,     dim=0)
 depth     = torch.cat(depth_labels_list, dim=0)
 mag       = torch.cat(mag_labels_list,   dim=0)
+loc       = torch.cat(loc_tuples_list,   dim=0)
+origin    = torch.cat(origin_tuples_list,dim=0)
 
 print(waveforms.shape)
 print(depth.shape)
@@ -111,10 +123,10 @@ print(mag.shape)
 data = {
     'raw waves': waveforms,
     'depth labels': depth,
-    'mag labels': mag
+    'mag labels': mag,
+    'origin': origin,
+    'loc': loc
 }
-
-
 
 torch.save(data, torchfile)
 

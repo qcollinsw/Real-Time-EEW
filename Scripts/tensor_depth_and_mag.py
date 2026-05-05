@@ -31,10 +31,13 @@ if __name__ == "__main__":
     depth_tensors_list    = []
     mag_tensors_list      = []
 
+    origin_tuples         = []
+    loc_tuples            = []
+    
+
     with open(file_to_process, mode='r', newline='') as file:
         reader = csv.DictReader(file)
         for row in reader:
-            
             
             directory = row['Year'] + '-' + row['Month'] + '-' + row['Day'] + '-' + row['Hour'] + '-' + row['Minute'] + '-' + row['Second']
 
@@ -46,11 +49,14 @@ if __name__ == "__main__":
 
             # Look at raw waveform....
 
-            rzth_arrival = row['RZTH Arrival']
-            kakh_arrival = row['KAKH Arrival']
-            kkwh_arrival = row['KKWH Arrivals']
-            p_arrivals = [rzth_arrival, kakh_arrival, kkwh_arrival]
+            rzth_arrival = float(row['RZTH Arrival'])
+            kakh_arrival = float(row['KAKH Arrival'])
+            kkwh_arrival = float(row['KKWH Arrivals'])
             latest_p_arrival = max(rzth_arrival, kakh_arrival, kkwh_arrival)
+            earliest_p_arrival = min(rzth_arrival, kakh_arrival, kkwh_arrival)
+
+            print(type(latest_p_arrival))
+            
 
             start_time = float(latest_p_arrival) - 6
             end_time   = float(latest_p_arrival) + 2
@@ -87,8 +93,10 @@ if __name__ == "__main__":
             kkwh_tensor_data = data_list_kkwh[sample_to_start:sample_to_start + samples_to_save]
             rzth_tensor_data = data_list_rzth[sample_to_start:sample_to_start + samples_to_save]
 
+            print(type(kakh_tensor_data[0]))
+
             depth_tensor     = [0, 0, 0, 0]    #less than 20km, greater than 20km and less than 40, 
-                                            #greater than 40 and less than 60, greater than 60
+                                               #greater than 40 and less than 60, greater than 60
 
             mag_tensor       = [0, 0, 0, 0]    #Less than 2, 2-3.49, 3.5-4.5, 4.5+
 
@@ -113,6 +121,12 @@ if __name__ == "__main__":
             else:
                 mag_tensor = [0.02, 0.02, 0.02, 0.94]
 
+            origin_time  = float(row['Hour'])*3600 + float(row['Minute'])*60 + float(row['Second'])
+
+            loc    = torch.tensor((rzth_arrival, kakh_arrival, kkwh_arrival))
+            origin = torch.tensor((origin_time, earliest_p_arrival))
+            
+
             stations_tensor = torch.tensor([kakh_tensor_data, kkwh_tensor_data, rzth_tensor_data])
             depth_tensor    = torch.tensor(depth_tensor)
             mag_tensor      = torch.tensor(mag_tensor)
@@ -120,6 +134,9 @@ if __name__ == "__main__":
             stations_tensors_list.append(stations_tensor)
             depth_tensors_list.append(depth_tensor)
             mag_tensors_list.append(mag_tensor)
+
+            origin_tuples.append(origin)
+            loc_tuples.append(loc)  
 
         raw_data = torch.stack(stations_tensors_list)
         raw_data = raw_data.unsqueeze(1)
@@ -130,12 +147,22 @@ if __name__ == "__main__":
         mag_classification   = torch.stack(mag_tensors_list)
         mag_classification   = mag_classification.unsqueeze(1)
 
+        origin_tuples_tensor = torch.stack(origin_tuples)
+        origin_tuples_tensor = origin_tuples_tensor.unsqueeze(1)
+
+        loc_tuples_tensor    = torch.stack(loc_tuples)
+        loc_tuples_tensor    = loc_tuples_tensor.unsqueeze(1)
+
         data = {
             'raw waves': raw_data,
             'depth labels': depth_classification,
-            'mag labels': mag_classification
+            'mag labels': mag_classification,
+            'origin': origin_tuples_tensor,
+            'loc': loc_tuples_tensor
         }
 
+        print(type(raw_data))
         print(raw_data.shape)
+
 
         torch.save(data, monthDate + '_depth_and_mag_label_smoothing.pt')
