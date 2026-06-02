@@ -4,7 +4,7 @@ from torch import nn
 from torch.utils.data import DataLoader, TensorDataset, random_split
 
 # Load training data from .pt file
-training_data = torch.load('allData_10s_smoothed.pt', map_location = 'cpu')
+training_data = torch.load('allData_8s_smoothed.pt', map_location = 'cpu')
 waveforms = training_data['raw waves']
 labels    = training_data['depth labels']
 dataset = TensorDataset(waveforms, labels)
@@ -22,4 +22,4 @@ test_indices  = testset.indices
 torch.save({
     "train_indices": train_indices,
     "test_indices": test_indices
-},  "indices.pt")
+},  "indices2.pt")

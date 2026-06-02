@@ -10,6 +10,7 @@ import time
 from datetime import datetime, timedelta, timezone
 import torch
 import sys
+import numpy as np
 
 if __name__ == "__main__":
 
@@ -33,6 +34,9 @@ if __name__ == "__main__":
 
     origin_tuples         = []
     loc_tuples            = []
+
+    coords_tuples         = []
+    time_tuples           = []
     
 
     with open(file_to_process, mode='r', newline='') as file:
@@ -40,8 +44,6 @@ if __name__ == "__main__":
         for row in reader:
             
             directory = row['Year'] + '-' + row['Month'] + '-' + row['Day'] + '-' + row['Hour'] + '-' + row['Minute'] + '-' + row['Second']
-
-            print(directory)
 
             file_kakh = raw_waveform_direct + "/" + directory + "/" + "N.KAKH.U.SAC"
             file_rzth = raw_waveform_direct + "/" + directory + "/" + "N.RZTH.U.SAC"
@@ -52,12 +54,10 @@ if __name__ == "__main__":
             rzth_arrival = float(row['RZTH Arrival'])
             kakh_arrival = float(row['KAKH Arrival'])
             kkwh_arrival = float(row['KKWH Arrivals'])
-            latest_p_arrival = max(rzth_arrival, kakh_arrival, kkwh_arrival)
+            latest_p_arrival  = max(rzth_arrival, kakh_arrival, kkwh_arrival)
             earliest_p_arrival = min(rzth_arrival, kakh_arrival, kkwh_arrival)
 
-            print(type(latest_p_arrival))
-            
-
+        
             start_time = float(latest_p_arrival) - 6
             end_time   = float(latest_p_arrival) + 2
 
@@ -70,10 +70,8 @@ if __name__ == "__main__":
             except:
                 continue
 
-
             time_HM_split = time_HM.split(":")
             file_start_time_seconds = float(time_HM_split[0])*3600 + float(time_HM_split[1])*60
-
 
             dt = start_time - file_start_time_seconds
 
@@ -83,8 +81,6 @@ if __name__ == "__main__":
 
             sample_to_start = int(sampling_rate * dt)
 
-            # print(sample_to_start)
-
             data_list_kakh = st_kakh[0].data.tolist() 
             data_list_rzth = st_rzth[0].data.tolist() 
             data_list_kkwh = st_kkwh[0].data.tolist() 
@@ -93,39 +89,47 @@ if __name__ == "__main__":
             kkwh_tensor_data = data_list_kkwh[sample_to_start:sample_to_start + samples_to_save]
             rzth_tensor_data = data_list_rzth[sample_to_start:sample_to_start + samples_to_save]
 
-            print(type(kakh_tensor_data[0]))
+            print(directory)
+            print(sample_to_start)
 
-            depth_tensor     = [0, 0, 0, 0]    #less than 20km, greater than 20km and less than 40, 
-                                               #greater than 40 and less than 60, greater than 60
+            # depth_tensor     = [0, 0, 0, 0]    #less than 20km, greater than 20km and less than 40, 
+                                                 #greater than 40 and less than 60, greater than 60
 
-            mag_tensor       = [0, 0, 0, 0]    #Less than 2, 2-3.49, 3.5-4.5, 4.5+
+            depth_tensor = []
+
+            mag_tensor   = []    #Less than 2, 2-4, 4+
 
             depth = row['Depth'][:-2]
             mag   = row['Magnitude']
 
-            if(float(depth) <= 20):
-                depth_tensor = [0.94, 0.02, 0.02, 0.02]
-            elif(float(depth) > 20 and float(depth) <= 40):
-                depth_tensor = [0.02, 0.94, 0.02, 0.02]
-            elif(float(depth) > 40 and float(depth) <= 60):
-                depth_tensor = [0.02, 0.02, 0.94, 0.02]
-            else:
-                depth_tensor = [0.02, 0.02, 0.02, 0.94]
+            long  = float(row["Long"])
+            lat   = float(row["Lat"])
 
-            if(float(mag) < 2):
-                mag_tensor = [0.94, 0.02, 0.02, 0.02]
-            elif(float(mag) >=2 and float(mag) < 3.5):
-                mag_tensor = [0.02, 0.94, 0.02, 0.02]
-            elif(float(mag) >= 3.5 and float(mag) < 4.5):
-                mag_tensor = [0.02, 0.02, 0.94, 0.02]
+            if(float(depth) <= 20):
+                depth_tensor = [1.0, 0.0, 0.0]
+            elif(float(depth) > 20 and float(depth) <=40):
+                depth_tensor = [0.0, 1.0, 0.0]
             else:
-                mag_tensor = [0.02, 0.02, 0.02, 0.94]
+                depth_tensor = [0.0, 0.0, 1.0]
+
+            if(float(mag) < 2.0):
+                mag_tensor = [1.0, 0.0, 0.0]
+            elif(float(mag) >=2.0 and float(mag) < 4.0):
+                mag_tensor = [0.0, 1.0, 0.0]
+            else:
+                mag_tensor = [0.0, 0.0, 1.0]
 
             origin_time  = float(row['Hour'])*3600 + float(row['Minute'])*60 + float(row['Second'])
 
-            loc    = torch.tensor((rzth_arrival, kakh_arrival, kkwh_arrival))
-            origin = torch.tensor((origin_time, earliest_p_arrival))
-            
+            a = rzth_arrival - kakh_arrival
+            b = rzth_arrival - kkwh_arrival
+            c = kakh_arrival - kkwh_arrival
+
+            loc    = torch.tensor((a,b,c))
+            origin = torch.tensor((origin_time - earliest_p_arrival))
+
+            coords = torch.tensor((lat, long))
+            time   = torch.tensor((origin_time))
 
             stations_tensor = torch.tensor([kakh_tensor_data, kkwh_tensor_data, rzth_tensor_data])
             depth_tensor    = torch.tensor(depth_tensor)
@@ -136,10 +140,14 @@ if __name__ == "__main__":
             mag_tensors_list.append(mag_tensor)
 
             origin_tuples.append(origin)
-            loc_tuples.append(loc)  
+            loc_tuples.append(loc)
+
+            coords_tuples.append(coords)
+            time_tuples.append(time)     
 
         raw_data = torch.stack(stations_tensors_list)
         raw_data = raw_data.unsqueeze(1)
+
 
         depth_classification = torch.stack(depth_tensors_list)
         depth_classification = depth_classification.unsqueeze(1)
@@ -153,16 +161,19 @@ if __name__ == "__main__":
         loc_tuples_tensor    = torch.stack(loc_tuples)
         loc_tuples_tensor    = loc_tuples_tensor.unsqueeze(1)
 
+        coords_tuples_tensors = torch.stack(coords_tuples)
+        time_tuples_tensors   = torch.stack(time_tuples)
+
         data = {
             'raw waves': raw_data,
             'depth labels': depth_classification,
             'mag labels': mag_classification,
             'origin': origin_tuples_tensor,
-            'loc': loc_tuples_tensor
+            'loc': loc_tuples_tensor,
+            'coords': coords_tuples_tensors,
+            'time': time_tuples_tensors
         }
 
-        print(type(raw_data))
         print(raw_data.shape)
-
 
         torch.save(data, monthDate + '_depth_and_mag_label_smoothing.pt')

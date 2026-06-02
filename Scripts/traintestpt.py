@@ -17,17 +17,40 @@ labels_mag           = data["mag labels"]
 origin_tuples_tensor = data['origin']
 loc_tuples_tensor    = data['loc']
 
-train_waveforms = waveforms[train_indices]
+coords_tuples_tensor = data["coords"]
+time_tuples_tensor   = data["time"]
+
+train_waveforms     = waveforms[train_indices]
 mag_train_labels    = labels_mag[train_indices]
 depth_train_labels  = labels_depth[train_indices]
 origin_tuples_train = origin_tuples_tensor[train_indices]
 loc_tuples_train    = loc_tuples_tensor[train_indices]
+coords_tuples_train = coords_tuples_tensor[train_indices]
+time_tuples_train   = time_tuples_tensor[train_indices]
+
+# target = torch.tensor([[0.0, 0.0, 1.0]])
+# std = 500
+# matching_indices = []
+# for i, row in enumerate(mag_train_labels):
+#     if(torch.equal(row, target)):
+#         matching_indices.append(i)
+
+# for i in matching_indices:
+#     for _ in range(10):     
+#         noisy_training = train_waveforms[i] + (std*torch.randn_like(train_waveforms[i]))
+#         train_waveforms = torch.cat((train_waveforms, noisy_training.unsqueeze(0)), dim=0)
+#         mag_train_labels = torch.cat((mag_train_labels, mag_train_labels[i].unsqueeze(0)), dim=0)
+#         depth_train_labels = torch.cat((depth_train_labels, depth_train_labels[i].unsqueeze(0)), dim=0)
+#         origin_tuples_train = torch.cat((origin_tuples_train, origin_tuples_train[i].unsqueeze(0)), dim=0)
+#         loc_tuples_train = torch.cat((loc_tuples_train, loc_tuples_train[i].unsqueeze(0)), dim=0)
 
 test_waveforms     = waveforms[test_indices]
 mag_test_labels    = labels_mag[test_indices]
 depth_test_labels  = labels_depth[test_indices]
 origin_tuples_test = origin_tuples_tensor[test_indices]
 loc_tuples_test    = loc_tuples_tensor[test_indices]
+coords_tuples_test = coords_tuples_tensor[test_indices]
+time_tuples_test   = time_tuples_tensor[test_indices]
 
 
 test_data = {
@@ -35,7 +58,9 @@ test_data = {
     'depth labels': depth_test_labels,
     'mag labels': mag_test_labels,
     'origin': origin_tuples_test,
-    'loc': loc_tuples_test
+    'loc': loc_tuples_test,
+    'coords': coords_tuples_test,
+    'time': time_tuples_test
 }
 
 train_data = {
@@ -43,7 +68,9 @@ train_data = {
     'depth labels': depth_train_labels,
     'mag labels': mag_train_labels,
     'origin': origin_tuples_train,
-    'loc': loc_tuples_train
+    'loc': loc_tuples_train,
+    'coords': coords_tuples_train,
+    'time': time_tuples_train
 }
 
 torch.save(train_data, 'train.pt')

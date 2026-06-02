@@ -118,7 +118,7 @@ if __name__ == "__main__":
                 if(not is_number(mag)):
                     eq_data = ""
                     continue
-
+                
                 long_ddm_list = long_ddm.split()
                 lat_ddm_list  = lat_ddm.split()
 

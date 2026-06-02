@@ -82,3 +82,5 @@ python tensor_depth_and_mag.py d201203c     March2012  2012 8
 python tensor_depth_and_mag.py d201204a     April2012  2012 8
 
 python pt_merger.py
+python traintestpt.py
+python kmeans.py
