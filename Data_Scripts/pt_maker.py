@@ -1,7 +1,6 @@
 # Author: Quincy Collinsworth
 # The purpose of this script is to create tensor file for training 
-# CNN model for magnitude classification
-
+# CNN model
 # Input: csv file path for EQ data
 
 import csv
